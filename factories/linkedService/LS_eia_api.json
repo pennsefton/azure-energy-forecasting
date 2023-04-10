@@ -1,0 +1,20 @@
+{
+	"name": "LS_eia_api",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Linked service to connect to the EIA.com API to pull energy demand data",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"apikey": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}
