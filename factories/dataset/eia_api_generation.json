@@ -1,5 +1,5 @@
 {
-	"name": "eia_api",
+	"name": "eia_api_generation",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_eia_api",
