@@ -41,7 +41,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "eia_api",
+						"referenceName": "eia_api_generation",
 						"type": "DatasetReference"
 					}
 				],
