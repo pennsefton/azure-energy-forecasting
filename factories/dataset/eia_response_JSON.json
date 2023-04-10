@@ -1,0 +1,18 @@
+{
+	"name": "eia_response_JSON",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blob_Storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "eia"
+			}
+		},
+		"schema": {}
+	}
+}
