@@ -7,6 +7,9 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000"
+		},
 		"schema": []
 	}
 }
