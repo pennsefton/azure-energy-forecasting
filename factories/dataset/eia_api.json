@@ -1,0 +1,12 @@
+{
+	"name": "eia_api",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_eia_api",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
