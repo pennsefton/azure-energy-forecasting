@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "openmeteo_api",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_OpenMeteo",
@@ -13,9 +13,6 @@
 				"type": "string"
 			},
 			"start_date": {
-				"type": "string"
-			},
-			"end_date": {
 				"type": "string"
 			}
 		},
