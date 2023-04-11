@@ -18,7 +18,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "EIA to Storage",
+									"activity": "If first run",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -116,7 +116,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "new_offset",
+									"activity": "EIA to Storage",
 									"dependencyConditions": [
 										"Succeeded"
 									]
