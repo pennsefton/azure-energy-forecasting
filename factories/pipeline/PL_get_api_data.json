@@ -70,7 +70,18 @@
 							"inputs": [
 								{
 									"referenceName": "eia_api_generation",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"offest": {
+											"value": "@variables('offset')",
+											"type": "Expression"
+										},
+										"api_key": {
+											"value": "@pipeline().parameters.api_key",
+											"type": "Expression"
+										},
+										"start_date": "2022-01-01T00"
+									}
 								}
 							],
 							"outputs": [
@@ -102,15 +113,18 @@
 				}
 			}
 		],
+		"parameters": {
+			"api_key": {
+				"type": "string",
+				"defaultValue": "krxehf9mWuy9KnfZ0yzZ6eAEgJjHwzOzRUA5ZW55"
+			}
+		},
 		"variables": {
 			"offset": {
 				"type": "String",
 				"defaultValue": "0"
 			},
 			"increment": {
-				"type": "String"
-			},
-			"request_total": {
 				"type": "String"
 			},
 			"pipeline_complete": {
