@@ -13,7 +13,7 @@
 				"type": "string"
 			},
 			"start_date": {
-				"type": "array"
+				"type": "string"
 			},
 			"end_date": {
 				"type": "string"
@@ -23,7 +23,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=',string(first(dataset().date_range)),'end=',string(last(dataset().date_range)),'sort[0][column]=period&sort[0][direction]=desc&offset=',dataset().offest,'&length=5000&api_key=',dataset().api_key)",
+				"value": "@concat('?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=',dataset().start_date,'end=',dataset().end_date,'sort[0][column]=period&sort[0][direction]=desc&offset=',dataset().offest,'&length=5000&api_key=',dataset().api_key)",
 				"type": "Expression"
 			}
 		},
