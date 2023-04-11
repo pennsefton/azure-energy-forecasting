@@ -5,10 +5,27 @@
 			"referenceName": "LS_eia_api",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"offest": {
+				"type": "string"
+			},
+			"api_key": {
+				"type": "string"
+			},
+			"start_date": {
+				"type": "string"
+			},
+			"end_date": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": "?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=2022-01-01T00&end=2022-12-31T00&sort[0][column]=period&sort[0][direction]=desc&offset=5001&length=5000&api_key=krxehf9mWuy9KnfZ0yzZ6eAEgJjHwzOzRUA5ZW55"
+			"relativeUrl": {
+				"value": "@concat('frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=',dataset().start_date,'&end=',dataset().end_date,'&sort[0][column]=period&sort[0][direction]=desc&offset=',dataset().offest,'&length=5000&api_key=',dataset().api_key)",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	}
