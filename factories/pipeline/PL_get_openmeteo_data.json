@@ -92,8 +92,8 @@
 				"defaultValue": "2022-12-31"
 			},
 			"locations": {
-				"type": "object",
-				"defaultValue": "{[     \"Tampa\": {       \"latitude\": 27.9506,       \"longitude\": -82.4572     },     \"Gainesville\": {       \"latitude\": 29.6516,       \"longitude\": -82.3248     },     \"Tucson\": {       \"latitude\": 32.2217,       \"longitude\": -110.9265     },     \"Seattle\": {       \"latitude\": 47.6062,       \"longitude\": -122.3321     },     \"Tallahassee\": {       \"latitude\": 30.4383,       \"longitude\": -84.2807     },     \"Los Angeles\": {       \"latitude\": 34.0522,       \"longitude\": -118.2437     }   ]}  "
+				"type": "array",
+				"defaultValue": "[     \"Tampa\": {       \"latitude\": 27.9506,       \"longitude\": -82.4572     },     \"Gainesville\": {       \"latitude\": 29.6516,       \"longitude\": -82.3248     },     \"Tucson\": {       \"latitude\": 32.2217,       \"longitude\": -110.9265     },     \"Seattle\": {       \"latitude\": 47.6062,       \"longitude\": -122.3321     },     \"Tallahassee\": {       \"latitude\": 30.4383,       \"longitude\": -84.2807     },     \"Los Angeles\": {       \"latitude\": 34.0522,       \"longitude\": -118.2437     }   ]  "
 			}
 		},
 		"annotations": []
