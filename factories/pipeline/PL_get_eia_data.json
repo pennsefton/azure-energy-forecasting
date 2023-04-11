@@ -79,8 +79,14 @@
 											"value": "@pipeline().parameters.api_key",
 											"type": "Expression"
 										},
-										"start_date": "2022-01-01T00",
-										"end_date": "2022-12-31T00"
+										"start_date": {
+											"value": "@pipeline().parameters.start_date",
+											"type": "Expression"
+										},
+										"end_date": {
+											"value": "@pipeline().parameters.end_date",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -192,6 +198,14 @@
 			"api_key": {
 				"type": "string",
 				"defaultValue": "krxehf9mWuy9KnfZ0yzZ6eAEgJjHwzOzRUA5ZW55"
+			},
+			"start_date": {
+				"type": "string",
+				"defaultValue": "2022-01-01T00"
+			},
+			"end_date": {
+				"type": "string",
+				"defaultValue": "2022-12-31T00"
 			}
 		},
 		"variables": {
@@ -203,6 +217,9 @@
 				"type": "String"
 			},
 			"increment": {
+				"type": "String"
+			},
+			"city": {
 				"type": "String"
 			}
 		},
