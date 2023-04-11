@@ -14,9 +14,6 @@
 			},
 			"start_date": {
 				"type": "string"
-			},
-			"end_date": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
