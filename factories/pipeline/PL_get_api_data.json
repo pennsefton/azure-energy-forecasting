@@ -125,7 +125,8 @@
 				"defaultValue": "0"
 			},
 			"increment": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "0"
 			},
 			"pipeline_complete": {
 				"type": "String"
