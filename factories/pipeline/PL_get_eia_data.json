@@ -215,12 +215,10 @@
 				"typeProperties": {
 					"url": "https://energyforecast-kv.vault.azure.net/secrets/eia-api-key/6c6c52b2acb14e89ac6b1ae04567313e?api-version=7.0",
 					"method": "GET",
-					"linkedServices": [
-						{
-							"referenceName": "LS_energy_kv",
-							"type": "LinkedServiceReference"
-						}
-					]
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
 				}
 			},
 			{
@@ -238,17 +236,13 @@
 				"typeProperties": {
 					"variableName": "api_key",
 					"value": {
-						"value": "@activity('kv_get_api_key').output",
+						"value": "@string(activity('kv_get_api_key').output.value)",
 						"type": "Expression"
 					}
 				}
 			}
 		],
 		"parameters": {
-			"api_key": {
-				"type": "string",
-				"defaultValue": "krxehf9mWuy9KnfZ0yzZ6eAEgJjHwzOzRUA5ZW55"
-			},
 			"start_date": {
 				"type": "string",
 				"defaultValue": "2022-01-01T00"
