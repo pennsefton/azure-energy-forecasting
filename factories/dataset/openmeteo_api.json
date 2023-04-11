@@ -25,7 +25,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@concat('archive?latitude=','','&longitude=','','&start_date=','','&end_date=','','&hourly=temperature_2m,precipitation,cloudcover,direct_normal_irradiance,windspeed_10m&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch')",
+					"value": "@concat('archive?latitude=',string(dataset().latitude),'&longitude=',string(dataset().longitude),'&start_date=',dataset().start_date,'&end_date=',dataset().end_date,'&hourly=temperature_2m,precipitation,cloudcover,direct_normal_irradiance,windspeed_10m&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch')",
 					"type": "Expression"
 				}
 			}
