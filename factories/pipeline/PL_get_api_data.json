@@ -112,61 +112,68 @@
 							}
 						},
 						{
-							"name": "Lookup total",
-							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "new_offset",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "JsonSource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"wildcardFileName": "*.json",
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "JsonReadSettings"
-									}
-								},
-								"dataset": {
-									"referenceName": "eia_response_JSON",
-									"type": "DatasetReference"
-								}
-							}
-						},
-						{
-							"name": "Set total",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Lookup total",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "total",
-								"value": {
-									"value": "@string(activity('Lookup total').output.firstRow.response.total)",
+								"expression": {
+									"value": "@equals(int(variables('offset')),0)",
 									"type": "Expression"
-								}
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Lookup total",
+										"type": "Lookup",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "JsonSource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"wildcardFileName": "*.json",
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "JsonReadSettings"
+												}
+											},
+											"dataset": {
+												"referenceName": "eia_response_JSON",
+												"type": "DatasetReference"
+											}
+										}
+									},
+									{
+										"name": "Set total",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "Lookup total",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "total",
+											"value": {
+												"value": "@string(activity('Lookup total').output.firstRow.response.total)",
+												"type": "Expression"
+											}
+										}
+									}
+								]
 							}
 						}
 					],
