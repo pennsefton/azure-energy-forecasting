@@ -3,36 +3,83 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "OpenMeteo to Blob",
-				"type": "Copy",
+				"name": "ForEach Location",
+				"type": "ForEach",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "HttpReadSettings",
-							"requestMethod": "GET"
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
+					"items": {
+						"value": "@pipeline().parameters.locations.items",
+						"type": "Expression"
 					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "openmeteo_api",
-						"type": "DatasetReference"
-					}
-				]
+					"activities": [
+						{
+							"name": "OpenMeteo to Blob",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "openmeteo_api",
+									"type": "DatasetReference",
+									"parameters": {
+										"latitude": {
+											"value": "@item().latitude",
+											"type": "Expression"
+										},
+										"longitude": {
+											"value": "@item().longitude",
+											"type": "Expression"
+										},
+										"start_date": {
+											"value": "@pipeline().parameters.start_date",
+											"type": "Expression"
+										},
+										"end_date": {
+											"value": "@pipeline().parameters.end_date",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "openmeteo_reponse_JSON",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -64,6 +111,14 @@
 						"longitude": -118.2437
 					}
 				}
+			},
+			"start_date": {
+				"type": "string",
+				"defaultValue": "2022-01-01"
+			},
+			"end_date": {
+				"type": "string",
+				"defaultValue": "2022-12-31"
 			}
 		},
 		"annotations": []
