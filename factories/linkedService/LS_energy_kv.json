@@ -1,0 +1,10 @@
+{
+	"name": "LS_energy_kv",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://energyforecast-kv.vault.azure.net/"
+		}
+	}
+}
