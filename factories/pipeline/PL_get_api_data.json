@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('pipeline_complete'),'True')",
+						"value": "@less(variables('total'),variables('offset'))",
 						"type": "Expression"
 					},
 					"activities": [
@@ -92,23 +92,6 @@
 							]
 						},
 						{
-							"name": "Pipeline Complete",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "EIA to Storage",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "pipeline_complete",
-								"value": "True"
-							}
-						},
-						{
 							"name": "new_offset",
 							"type": "SetVariable",
 							"dependsOn": [
@@ -124,6 +107,64 @@
 								"variableName": "offset",
 								"value": {
 									"value": "@variables('increment')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Lookup total",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "new_offset",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*.json",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "eia_response_JSON",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Set total",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Lookup total",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "total",
+								"value": {
+									"value": "@activity('Lookup total').output.response.total",
 									"type": "Expression"
 								}
 							}
@@ -144,7 +185,7 @@
 				"type": "String",
 				"defaultValue": "0"
 			},
-			"pipeline_complete": {
+			"total": {
 				"type": "String"
 			},
 			"increment": {
