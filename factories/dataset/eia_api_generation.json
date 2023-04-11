@@ -12,7 +12,7 @@
 			"api_key": {
 				"type": "string"
 			},
-			"date_range": {
+			"start_date": {
 				"type": "array"
 			},
 			"end_date": {
