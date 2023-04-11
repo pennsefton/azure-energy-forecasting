@@ -5,7 +5,14 @@
 			{
 				"name": "Until All Requests",
 				"type": "Until",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set api_key",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -192,6 +199,47 @@
 					],
 					"timeout": "0.2:00:00"
 				}
+			},
+			{
+				"name": "kv_get_api_key",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://energyforecast-kv.vault.azure.net/secrets/eia-api-key/6c6c52b2acb14e89ac6b1ae04567313e?api-version=7.0",
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "Set api_key",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "kv_get_api_key",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "api_key",
+					"value": {
+						"value": "@activity('kv_get_api_key').output",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -220,6 +268,9 @@
 				"type": "String"
 			},
 			"city": {
+				"type": "String"
+			},
+			"api_key": {
 				"type": "String"
 			}
 		},
