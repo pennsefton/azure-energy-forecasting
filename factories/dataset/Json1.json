@@ -1,0 +1,35 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_OpenMeteo",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"latitude": {
+				"type": "string"
+			},
+			"longitude": {
+				"type": "string"
+			},
+			"start_date": {
+				"type": "string"
+			},
+			"end_date": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@concat('archive?latitude=','','&longitude=','','&start_date=','','&end_date=','','&hourly=temperature_2m,precipitation,cloudcover,direct_normal_irradiance,windspeed_10m&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch')",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
