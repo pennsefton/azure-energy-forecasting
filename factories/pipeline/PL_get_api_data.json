@@ -107,6 +107,26 @@
 								"variableName": "pipeline_complete",
 								"value": "True"
 							}
+						},
+						{
+							"name": "new_offset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Increment offset",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "offset",
+								"value": {
+									"value": "@variables('increment')",
+									"type": "Expression"
+								}
+							}
 						}
 					],
 					"timeout": "0.2:00:00"
@@ -125,6 +145,9 @@
 				"defaultValue": "0"
 			},
 			"pipeline_complete": {
+				"type": "String"
+			},
+			"increment": {
 				"type": "String"
 			}
 		},
