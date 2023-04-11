@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@less(variables('total'),variables('offset'))",
+						"value": "@less(int(variables('total')),int(variables('offset')))",
 						"type": "Expression"
 					},
 					"activities": [
