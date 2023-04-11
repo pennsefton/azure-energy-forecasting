@@ -13,14 +13,15 @@
 				"type": "string"
 			},
 			"date_range": {
-				"type": "array"
+				"type": "array",
+				"defaultValue": []
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat('?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=',first(dataset().date_range),'end=',last(dataset().date_range),'sort[0][column]=period&sort[0][direction]=desc&offset=',dataset().offest,'&length=5000&api_key=',dataset().api_key)",
+				"value": "@concat('?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&start=',dataset().date_range,'end=',last(dataset().date_range),'sort[0][column]=period&sort[0][direction]=desc&offset=',dataset().offest,'&length=5000&api_key=',dataset().api_key)",
 				"type": "Expression"
 			}
 		},
