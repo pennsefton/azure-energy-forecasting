@@ -72,7 +72,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"offest": {
-											"value": "@variables('increment')",
+											"value": "@variables('offset')",
 											"type": "Expression"
 										},
 										"api_key": {
