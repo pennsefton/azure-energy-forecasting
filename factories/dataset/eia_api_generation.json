@@ -11,6 +11,9 @@
 			},
 			"api_key": {
 				"type": "string"
+			},
+			"date_range": {
+				"type": "array"
 			}
 		},
 		"annotations": [],
