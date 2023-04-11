@@ -1,5 +1,5 @@
 {
-	"name": "PL_get_api_data",
+	"name": "PL_get_eia_data",
 	"properties": {
 		"activities": [
 			{
@@ -34,7 +34,7 @@
 							}
 						},
 						{
-							"name": "EIA to Storage",
+							"name": "EIA to Blob",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -116,7 +116,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "EIA to Storage",
+									"activity": "EIA to Blob",
 									"dependencyConditions": [
 										"Succeeded"
 									]
