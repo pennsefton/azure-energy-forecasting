@@ -3,56 +3,120 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "EIA to Storage",
-				"type": "Copy",
+				"name": "Until All Requests",
+				"type": "Until",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:10:00",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "GET",
-						"additionalHeaders": {
-							"demand": "?frequency=hourly&data[0]=value&facets[respondent][]=GVL&facets[respondent][]=LDWP&facets[respondent][]=SCL&facets[respondent][]=TAL&facets[respondent][]=TEC&facets[respondent][]=TEPC&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000"
-						},
-						"paginationRules": {
-							"supportRFC5988": "true",
-							"": ""
-						}
+					"expression": {
+						"value": "@equals(variables('pipeline_complete'),'True')",
+						"type": "Expression"
 					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+					"activities": [
+						{
+							"name": "Increment offset",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "EIA to Storage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "increment",
+								"value": {
+									"value": "@string(add(int(variables('offset')),5001))",
+									"type": "Expression"
+								}
+							}
 						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
+						{
+							"name": "EIA to Storage",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:10:00",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true",
+										"": ""
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "eia_api_generation",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "eia_response_JSON",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "Pipeline Complete",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "EIA to Storage",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pipeline_complete",
+								"value": "True"
+							}
 						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "eia_api_generation",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "eia_response_JSON",
-						"type": "DatasetReference"
-					}
-				]
+					],
+					"timeout": "0.2:00:00"
+				}
 			}
 		],
+		"variables": {
+			"offset": {
+				"type": "String",
+				"defaultValue": "0"
+			},
+			"increment": {
+				"type": "String"
+			},
+			"request_total": {
+				"type": "String"
+			},
+			"pipeline_complete": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
