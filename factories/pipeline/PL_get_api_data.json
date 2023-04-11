@@ -164,7 +164,7 @@
 							"typeProperties": {
 								"variableName": "total",
 								"value": {
-									"value": "@activity('Lookup total').output.response.total",
+									"value": "@activity('Lookup total').output.firstRow.response.total",
 									"type": "Expression"
 								}
 							}
