@@ -78,8 +78,7 @@
 										"api_key": {
 											"value": "@pipeline().parameters.api_key",
 											"type": "Expression"
-										},
-										"date_range": "[2022-01-01T00, 2022-12-31T00]"
+										}
 									}
 								}
 							],
