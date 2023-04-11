@@ -215,10 +215,12 @@
 				"typeProperties": {
 					"url": "https://energyforecast-kv.vault.azure.net/secrets/eia-api-key/6c6c52b2acb14e89ac6b1ae04567313e?api-version=7.0",
 					"method": "GET",
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://vault.azure.net"
-					}
+					"linkedServices": [
+						{
+							"referenceName": "LS_energy_kv",
+							"type": "LinkedServiceReference"
+						}
+					]
 				}
 			},
 			{
