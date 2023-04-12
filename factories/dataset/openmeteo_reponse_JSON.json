@@ -5,12 +5,16 @@
 			"referenceName": "LS_blob_Storage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "*.json",
 				"container": "openmeteo"
 			}
 		},
