@@ -74,7 +74,13 @@
 							"outputs": [
 								{
 									"referenceName": "openmeteo_reponse_JSON",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": {
+											"value": "@concat(item().name,'_',string(utcnow()),'.json')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -129,6 +135,9 @@
 		},
 		"variables": {
 			"city": {
+				"type": "String"
+			},
+			"api_key": {
 				"type": "String"
 			}
 		},
