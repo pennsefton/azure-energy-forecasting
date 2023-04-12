@@ -83,7 +83,7 @@
 											"type": "Expression"
 										},
 										"api_key": {
-											"value": "@pipeline().parameters.api_key",
+											"value": "@variables('api_key')",
 											"type": "Expression"
 										},
 										"start_date": {
