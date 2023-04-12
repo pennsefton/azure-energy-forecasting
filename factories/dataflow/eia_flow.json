@@ -1,0 +1,25 @@
+{
+	"name": "eia_flow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "eia_response_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "eiaJSON"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> eiaJSON"
+			]
+		}
+	}
+}
