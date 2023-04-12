@@ -13,12 +13,24 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "flattenJSON"
+				}
+			],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> eiaJSON"
+				"     rowUrlColumn: 'MDSourceFile',",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['*.json']) ~> eiaJSON",
+				"eiaJSON foldDown(unroll(),",
+				"     mapColumn(",
+				"          MDSourceFile",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenJSON"
 			]
 		}
 	}
