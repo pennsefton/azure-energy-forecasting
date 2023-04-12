@@ -13,21 +13,25 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "flatten1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'MDFileName',",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['*.json']) ~> openmeteoJSON",
-				"openmeteoJSON foldDown(unroll(),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     wildcardPaths:['*.json']) ~> openmeteoJSON"
 			]
 		}
 	}
