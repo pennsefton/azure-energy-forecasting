@@ -12,25 +12,55 @@
 					"name": "eiaJSON"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "staging_eia",
+						"type": "DatasetReference"
+					},
+					"name": "eiaSQL"
+				}
+			],
 			"transformations": [
 				{
-					"name": "flattenJSON"
+					"name": "flattenJSON",
+					"description": "flatten to response data"
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          apiVersion as string,",
+				"          request as (command as string, params as (api_key as string, data as string[], end as string, facets as (respondent as string[]), frequency as string, length as short, offset as integer, sort as (column as string, direction as string)[], start as string)),",
+				"          response as (data as (fueltype as string, period as string, respondent as string, {respondent-name} as string, {type-name} as string, value as short, {value-units} as string)[], dateFormat as string, description as string, frequency as string, total as integer, warnings as (description as string, warning as string)[])",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'MDSourceFile',",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['*.json']) ~> eiaJSON",
-				"eiaJSON foldDown(unroll(),",
+				"eiaJSON foldDown(unroll(response.data),",
 				"     mapColumn(",
-				"          MDSourceFile",
+				"          fueltype = response.data.fueltype,",
+				"          period = response.data.period,",
+				"          respondent = response.data.respondent,",
+				"          {respondent-name} = response.data.{respondent-name},",
+				"          {type-name} = response.data.{type-name},",
+				"          value = response.data.value,",
+				"          {value-units} = response.data.{value-units}",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flattenJSON"
+				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
+				"flattenJSON sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> eiaSQL"
 			]
 		}
 	}
