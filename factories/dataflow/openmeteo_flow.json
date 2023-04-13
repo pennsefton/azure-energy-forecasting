@@ -15,10 +15,16 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "select1"
+					"name": "selectall"
 				},
 				{
-					"name": "flatten1"
+					"name": "flattencloudcover"
+				},
+				{
+					"name": "flatten5"
+				},
+				{
+					"name": "flatten6"
 				}
 			],
 			"scriptLines": [
@@ -46,11 +52,13 @@
 				"          temperature_2m = hourly.temperature_2m,",
 				"          time = hourly.time,",
 				"          windspeed_10m = hourly.windspeed_10m,",
-				"          hourly = hourly",
+				"          MDFileName,",
+				"          longitude,",
+				"          latitude",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 foldDown(unroll(cloudcover),",
+				"     skipDuplicateMapOutputs: true) ~> selectall",
+				"selectall foldDown(unroll(cloudcover),",
 				"     mapColumn(",
 				"          cloudcover,",
 				"          direct_normal_irradiance,",
@@ -60,7 +68,29 @@
 				"          windspeed_10m",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     skipDuplicateMapOutputs: false) ~> flattencloudcover",
+				"flattencloudcover foldDown(unroll(time),",
+				"     mapColumn(",
+				"          cloudcover,",
+				"          direct_normal_irradiance,",
+				"          precipitation,",
+				"          temperature_2m,",
+				"          time,",
+				"          windspeed_10m",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten5",
+				"flatten5 foldDown(unroll(windspeed_10m),",
+				"     mapColumn(",
+				"          cloudcover,",
+				"          direct_normal_irradiance,",
+				"          precipitation,",
+				"          temperature_2m,",
+				"          time,",
+				"          windspeed_10m",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten6"
 			]
 		}
 	}
