@@ -13,7 +13,14 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          elevation as double,",
@@ -31,7 +38,29 @@
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'MDFileName',",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['*.json']) ~> openmeteoJSON"
+				"     wildcardPaths:['*.json']) ~> openmeteoJSON",
+				"openmeteoJSON select(mapColumn(",
+				"          cloudcover = hourly.cloudcover,",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
+				"          precipitation = hourly.precipitation,",
+				"          temperature_2m = hourly.temperature_2m,",
+				"          time = hourly.time,",
+				"          windspeed_10m = hourly.windspeed_10m,",
+				"          hourly = hourly",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 foldDown(unroll(cloudcover),",
+				"     mapColumn(",
+				"          cloudcover,",
+				"          direct_normal_irradiance,",
+				"          precipitation,",
+				"          temperature_2m,",
+				"          time,",
+				"          windspeed_10m",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
 		}
 	}
