@@ -9,16 +9,32 @@
 						"referenceName": "openmeteo_reponse_JSON",
 						"type": "DatasetReference"
 					},
-					"name": "openmeteoJSON"
+					"name": "openmeteoCloudcover"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "openmeteoDNI"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "select1"
+					"name": "selectCloudcover"
 				},
 				{
-					"name": "flatten1"
+					"name": "flattenCloudcover"
+				},
+				{
+					"name": "selectDNI"
+				},
+				{
+					"name": "flattenDNI"
+				},
+				{
+					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -38,20 +54,54 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteoJSON",
-				"openmeteoJSON select(mapColumn(",
+				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteoCloudcover",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> openmeteoDNI",
+				"openmeteoCloudcover select(mapColumn(",
 				"          cloudcover = hourly.cloudcover,",
 				"          time = hourly.time",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 foldDown(unrollMultiple(cloudcover,time),",
+				"     skipDuplicateMapOutputs: true) ~> selectCloudcover",
+				"selectCloudcover foldDown(unrollMultiple(cloudcover,time),",
 				"     mapColumn(",
-				"          direct_normal_irradiance = time,",
+				"          time,",
 				"          cloudcover",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     skipDuplicateMapOutputs: false) ~> flattenCloudcover",
+				"openmeteoDNI select(mapColumn(",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
+				"          time = hourly.time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectDNI",
+				"selectDNI foldDown(unrollMultiple(direct_normal_irradiance,time),",
+				"     mapColumn(",
+				"          time = time,",
+				"          direct_normal_irradiance",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenDNI",
+				"flattenCloudcover, flattenDNI join(flattenCloudcover@time == flattenDNI@time,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1"
 			]
 		}
 	}
