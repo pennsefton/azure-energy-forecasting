@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Gainesville_2023-04-12T01:15:12.1944537Z.json",
-				"folderPath": "openmeteo"
+				"container": "openmeteo"
 			}
 		},
 		"schema": {}
