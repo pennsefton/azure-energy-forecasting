@@ -15,10 +15,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().filename",
-					"type": "Expression"
-				},
+				"fileName": "Gainesville_2023-04-12T01:15:12.1944537Z.json",
 				"container": "openmeteo"
 			}
 		},
