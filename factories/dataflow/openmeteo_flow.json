@@ -32,9 +32,6 @@
 				},
 				{
 					"name": "flattenDNI"
-				},
-				{
-					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -73,14 +70,16 @@
 				"     documentForm: 'documentPerLine') ~> openmeteoDNI",
 				"openmeteoCloudcover select(mapColumn(",
 				"          cloudcover = hourly.cloudcover,",
-				"          time = hourly.time",
+				"          time = hourly.time,",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectCloudcover",
-				"selectCloudcover foldDown(unrollMultiple(cloudcover,time),",
+				"selectCloudcover foldDown(unrollMultiple(cloudcover,time,direct_normal_irradiance),",
 				"     mapColumn(",
 				"          time,",
-				"          cloudcover",
+				"          cloudcover,",
+				"          direct_normal_irradiance",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenCloudcover",
@@ -92,16 +91,11 @@
 				"     skipDuplicateMapOutputs: true) ~> selectDNI",
 				"selectDNI foldDown(unrollMultiple(direct_normal_irradiance,time),",
 				"     mapColumn(",
-				"          time = time,",
+				"          time,",
 				"          direct_normal_irradiance",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flattenDNI",
-				"flattenCloudcover, flattenDNI join(flattenCloudcover@time == flattenDNI@time,",
-				"     joinType:'left',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1"
+				"     skipDuplicateMapOutputs: false) ~> flattenDNI"
 			]
 		}
 	}
