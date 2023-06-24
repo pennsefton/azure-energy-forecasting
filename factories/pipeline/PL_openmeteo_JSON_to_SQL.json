@@ -28,6 +28,15 @@
 							"openmeteoprecipitation": {
 								"filename": "Gainesville_*.json"
 							},
+							"openmeteodni": {
+								"filename": "Gainesville_*.json"
+							},
+							"openmeteotemperature": {
+								"filename": "Gainesville_*.json"
+							},
+							"openmeteowindspeed": {
+								"filename": "Gainesville_*.json"
+							},
 							"sinkCloudcover": {
 								"filename": "CloudcoverTEST.csv"
 							},
@@ -36,6 +45,15 @@
 							},
 							"sinkPrecipitation": {
 								"filename": "PreciptationTEST.csv"
+							},
+							"sinkdni": {
+								"filename": "dniTEST.csv"
+							},
+							"sinktemperature": {
+								"filename": "dniTEST.csv"
+							},
+							"sinkwindspeed": {
+								"filename": "dniTEST.csv"
 							}
 						}
 					},
