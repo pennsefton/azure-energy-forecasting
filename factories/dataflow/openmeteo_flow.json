@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "openmeteoCloudcover"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "openmeteotime"
 				}
 			],
 			"sinks": [],
@@ -19,6 +26,15 @@
 				},
 				{
 					"name": "flattenCloudcover"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
 				}
 			],
 			"scriptLines": [
@@ -39,20 +55,40 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteoCloudcover",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteotime",
 				"openmeteoCloudcover select(mapColumn(",
-				"          cloudcover = hourly.cloudcover,",
-				"          time = hourly.time",
+				"          cloudcover = hourly.cloudcover",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectCloudcover",
-				"selectCloudcover foldDown(unrollMultiple(cloudcover,time,direct_normal_irradiance),",
+				"selectCloudcover foldDown(unroll(cloudcover),",
 				"     mapColumn(",
-				"          time,",
-				"          cloudcover,",
-				"          direct_normal_irradiance",
+				"          cloudcover",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flattenCloudcover"
+				"     skipDuplicateMapOutputs: false) ~> flattenCloudcover",
+				"select2 select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select3 select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"openmeteotime select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3"
 			]
 		}
 	}
