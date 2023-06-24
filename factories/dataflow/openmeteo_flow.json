@@ -17,6 +17,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "openmeteotime"
+				},
+				{
+					"dataset": {
+						"referenceName": "TESTcloudcover",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -25,7 +32,8 @@
 						"referenceName": "TESTcloudcover",
 						"type": "DatasetReference"
 					},
-					"name": "sinkCloudcover"
+					"name": "sinkCloudcover",
+					"description": "Export data to blob"
 				},
 				{
 					"dataset": {
@@ -84,6 +92,9 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteotime",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
 				"openmeteoCloudcover select(mapColumn(",
 				"          cloudcover = hourly.cloudcover",
 				"     ),",
