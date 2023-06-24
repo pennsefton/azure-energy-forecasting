@@ -24,6 +24,19 @@
 						"type": "DatasetReference"
 					},
 					"name": "openmeteoprecipitation"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "openmeteodni"
+				},
+				{
+					"name": "openmeteotemperature"
+				},
+				{
+					"name": "openmeteowindspeed"
 				}
 			],
 			"sinks": [
@@ -48,6 +61,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sinkPrecipitation"
+				},
+				{
+					"dataset": {
+						"referenceName": "TESTcloudcover",
+						"type": "DatasetReference"
+					},
+					"name": "sinkdni"
 				}
 			],
 			"transformations": [
@@ -68,6 +88,12 @@
 				},
 				{
 					"name": "flattenPrecipitation"
+				},
+				{
+					"name": "selectdni"
+				},
+				{
+					"name": "flattendni"
 				}
 			],
 			"scriptLines": [
@@ -122,6 +148,27 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteoprecipitation",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteodni",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> openmeteotemperature",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> openmeteowindspeed",
 				"openmeteoCloudcover select(mapColumn(",
 				"          cloudcover = hourly.cloudcover",
 				"     ),",
@@ -155,6 +202,17 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenPrecipitation",
+				"openmeteodni select(mapColumn(",
+				"          dni = hourly.direct_normal_irradiance",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectdni",
+				"selectdni foldDown(unroll(dni, dni),",
+				"     mapColumn(",
+				"          hourly = dni",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattendni",
 				"flattenCloudcover sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
@@ -166,7 +224,11 @@
 				"flattenPrecipitation sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sinkPrecipitation"
+				"     skipDuplicateMapOutputs: true) ~> sinkPrecipitation",
+				"flattendni sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkdni"
 			]
 		}
 	}
