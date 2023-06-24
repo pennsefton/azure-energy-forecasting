@@ -25,11 +25,17 @@
 							"openmeteotime": {
 								"filename": "Gainesville_*.json"
 							},
+							"openmeteoprecipitation": {
+								"filename": "Gainesville_*.json"
+							},
 							"sinkCloudcover": {
 								"filename": "CloudcoverTEST.csv"
 							},
 							"sinkTime": {
 								"filename": "TimeTEST.csv"
+							},
+							"sinkPrecipitation": {
+								"filename": "PreciptationTEST.csv"
 							}
 						}
 					},
