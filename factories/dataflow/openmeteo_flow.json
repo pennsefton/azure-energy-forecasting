@@ -89,7 +89,7 @@
 						"referenceName": "TESTcloudcover",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sinkwindspeed"
 				}
 			],
 			"transformations": [
@@ -124,10 +124,10 @@
 					"name": "flattentemperature"
 				},
 				{
-					"name": "select1"
+					"name": "selectwindspeed"
 				},
 				{
-					"name": "flatten1"
+					"name": "flattenwindspeed"
 				}
 			],
 			"scriptLines": [
@@ -292,13 +292,13 @@
 				"          windspeed = hourly.windspeed_10m",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 foldDown(unroll(windspeed, windspeed),",
+				"     skipDuplicateMapOutputs: true) ~> selectwindspeed",
+				"selectwindspeed foldDown(unroll(windspeed, windspeed),",
 				"     mapColumn(",
 				"          windspeed",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"     skipDuplicateMapOutputs: false) ~> flattenwindspeed",
 				"flattenCloudcover sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
@@ -319,10 +319,10 @@
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sinktemperature",
-				"flatten1 sink(allowSchemaDrift: true,",
+				"flattenwindspeed sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sinkwindspeed"
 			]
 		}
 	}
