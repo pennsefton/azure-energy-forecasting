@@ -1,5 +1,5 @@
 {
-	"name": "TESTcloudcover",
+	"name": "staging",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_blob_Storage",
