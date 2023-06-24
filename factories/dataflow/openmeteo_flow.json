@@ -31,7 +31,7 @@
 					"name": "selectTime"
 				},
 				{
-					"name": "flatten1"
+					"name": "flattenTime"
 				}
 			],
 			"scriptLines": [
@@ -85,12 +85,12 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectTime",
-				"selectTime foldDown(unroll(),",
+				"selectTime foldDown(unroll(time, time),",
 				"     mapColumn(",
 				"          time",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     skipDuplicateMapOutputs: false) ~> flattenTime"
 			]
 		}
 	}
