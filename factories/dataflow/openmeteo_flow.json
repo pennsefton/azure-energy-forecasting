@@ -19,7 +19,22 @@
 					"name": "openmeteotime"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TESTcloudcover",
+						"type": "DatasetReference"
+					},
+					"name": "sinkCloudcover"
+				},
+				{
+					"dataset": {
+						"referenceName": "TESTtime",
+						"type": "DatasetReference"
+					},
+					"name": "sinkTime"
+				}
+			],
 			"transformations": [
 				{
 					"name": "selectCloudcover"
@@ -90,7 +105,15 @@
 				"          time",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flattenTime"
+				"     skipDuplicateMapOutputs: false) ~> flattenTime",
+				"flattenCloudcover sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkCloudcover",
+				"flattenTime sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkTime"
 			]
 		}
 	}
