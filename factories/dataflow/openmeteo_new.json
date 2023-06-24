@@ -1,0 +1,60 @@
+{
+	"name": "openmeteo_new",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "openMeteo"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 1,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> openMeteo",
+				"openMeteo select(mapColumn(",
+				"          hourly = hourly.cloudcover,",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
+				"          precipitation = hourly.precipitation",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 foldDown(unrollMultiple(hourly,direct_normal_irradiance,precipitation),",
+				"     mapColumn(",
+				"          hourly,",
+				"          direct_normal_irradiance,",
+				"          precipitation",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
+			]
+		}
+	}
+}
