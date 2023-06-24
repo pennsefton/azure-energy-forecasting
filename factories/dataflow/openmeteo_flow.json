@@ -37,7 +37,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTtime",
+						"referenceName": "TESTcloudcover",
 						"type": "DatasetReference"
 					},
 					"name": "sinkTime"
