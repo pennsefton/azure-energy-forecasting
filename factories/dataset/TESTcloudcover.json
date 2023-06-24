@@ -1,0 +1,24 @@
+{
+	"name": "TESTcloudcover",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_blob_Storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "TESTcloudcover.csv",
+				"folderPath": "staging",
+				"container": "openmeteo"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
