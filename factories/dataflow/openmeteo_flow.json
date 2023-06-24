@@ -50,7 +50,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinkCloudcover",
@@ -58,35 +58,35 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinkTime"
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinkPrecipitation"
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinkdni"
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinktemperature"
 				},
 				{
 					"dataset": {
-						"referenceName": "TESTcloudcover",
+						"referenceName": "staging",
 						"type": "DatasetReference"
 					},
 					"name": "sinkwindspeed"
