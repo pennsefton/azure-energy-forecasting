@@ -12,21 +12,10 @@
 					"name": "openMeteo"
 				}
 			],
-			"sinks": [
-				{
-					"dataset": {
-						"referenceName": "staging",
-						"type": "DatasetReference"
-					},
-					"name": "sink1"
-				}
-			],
+			"sinks": [],
 			"transformations": [
 				{
 					"name": "select1"
-				},
-				{
-					"name": "flatten1"
 				}
 			],
 			"scriptLines": [
@@ -53,19 +42,7 @@
 				"          precipitation = hourly.precipitation",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 foldDown(unrollMultiple(hourly,direct_normal_irradiance,precipitation),",
-				"     mapColumn(",
-				"          hourly,",
-				"          direct_normal_irradiance,",
-				"          precipitation",
-				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"flatten1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
