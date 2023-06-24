@@ -51,9 +51,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     filename as string",
-				"}",
 				"source(output(",
 				"          elevation as double,",
 				"          generationtime_ms as double,",
@@ -116,10 +113,8 @@
 				"     skipDuplicateMapOutputs: true) ~> sinkCloudcover",
 				"flattenTime sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:[''],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> sinkTime"
+				"     skipDuplicateMapOutputs: true) ~> sinkTime"
 			]
 		}
 	}
