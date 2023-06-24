@@ -28,16 +28,10 @@
 					"name": "flattenCloudcover"
 				},
 				{
-					"name": "select1"
+					"name": "selectTime"
 				},
 				{
-					"name": "select2"
-				},
-				{
-					"name": "select3"
-				},
-				{
-					"name": "select4"
+					"name": "flatten1"
 				}
 			],
 			"scriptLines": [
@@ -86,14 +80,17 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenCloudcover",
-				"select2 select(skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select3 select(skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select4 select(skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select3",
-				"openmeteotime select(skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select4"
+				"openmeteotime select(mapColumn(",
+				"          hourly = hourly.time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectTime",
+				"selectTime foldDown(unroll(),",
+				"     mapColumn(",
+				"          hourly",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
 		}
 	}
