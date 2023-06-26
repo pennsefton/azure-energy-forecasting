@@ -16,6 +16,9 @@
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "flattencloudcover"
 				}
 			],
 			"scriptLines": [
@@ -37,12 +40,20 @@
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> openMeteo",
 				"openMeteo select(mapColumn(",
-				"          hourly = hourly.cloudcover,",
+				"          cloudcover = hourly.cloudcover,",
 				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
-				"          precipitation = hourly.precipitation",
+				"          precipitation = hourly.precipitation,",
+				"          generationtime_ms",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 foldDown(unrollMultiple(cloudcover,direct_normal_irradiance),",
+				"     mapColumn(",
+				"          direct_normal_irradiance = direct_normal_irradiance,",
+				"          cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattencloudcover"
 			]
 		}
 	}
