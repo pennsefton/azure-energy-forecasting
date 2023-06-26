@@ -15,7 +15,7 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "parse1"
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -36,9 +36,12 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> source1",
-				"source1 parse(hourly = hourly ? (windspeed as integer),",
-				"     format: 'json',",
-				"     documentForm: 'documentPerLine') ~> parse1"
+				"source1 select(mapColumn(",
+				"          cloudcover = hourly.cloudcover,",
+				"          precipitation = hourly.precipitation",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}
