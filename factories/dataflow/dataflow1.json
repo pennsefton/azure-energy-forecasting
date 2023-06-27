@@ -10,10 +10,61 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "flatten2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "window2"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          elevation as double,",
@@ -30,7 +81,86 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['Gainesville_*.json']) ~> source1"
+				"     wildcardPaths:['Gainesville_*.json']) ~> source1",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> source2",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> source3",
+				"source1 select(mapColumn(",
+				"          cloudcover = hourly.cloudcover,",
+				"          time = hourly.time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"cast1 derive(flattened = flatten([cloudcover, time])) ~> derivedColumn1",
+				"derivedColumn1 foldDown(unroll(flattened, flattened),",
+				"     mapColumn(",
+				"          flattened = flattened",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"select1 cast(output(",
+				"          cloudcover as string[]",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"source2 select(mapColumn(",
+				"          cloudcover = hourly.cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"source3 select(mapColumn(",
+				"          cloudcover = hourly.cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 foldDown(unroll(cloudcover),",
+				"     mapColumn(",
+				"          cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"select2 derive(index = mapIndex(cloudcover, #index)) ~> derivedColumn3",
+				"derivedColumn3 derive(unrolled = unfold(cloudcover),",
+				"          column1 = ERROR_FUNCTION('')) ~> derivedColumn4",
+				"flatten2 window(over(cloudcover),",
+				"     asc(cloudcover, false),",
+				"     new = rank()) ~> window1",
+				"flatten1 rank(asc(toDate(toString(flattened)), true),",
+				"     output(time_rank as long)) ~> rank1",
+				"rank1 window(over(time_rank),",
+				"     asc(time_rank, false),",
+				"     startRowOffset: 0L,",
+				"     new_rank = rank()) ~> window2"
 			]
 		}
 	}
