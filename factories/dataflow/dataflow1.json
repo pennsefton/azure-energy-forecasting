@@ -12,7 +12,15 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "staging",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "selectCloudcover"
@@ -130,7 +138,7 @@
 				"          cloudcover as string[]",
 				"     ),",
 				"     errors: true) ~> cast1",
-				"flatten1 derive(times = toDate(toString(flattened)) ,",
+				"flatten1 derive(times = toDate(toString(flattened)),",
 				"          cloudcover = toInteger(flattened)) ~> derivedColumn5",
 				"derivedColumn5 derive(time_null = iif(isNull(times), 1, 0)) ~> derivedColumn6",
 				"derivedColumn6 window(over(time_null),",
@@ -179,7 +187,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten3",
-				"flatten3 derive(times = toDate(toString(flattened)) ,",
+				"flatten3 derive(times = toDate(toString(flattened)),",
 				"          dni = toDouble(flattened)) ~> derivedColumn9",
 				"derivedColumn9 derive(time_null = iif(isNull(times),1,0)) ~> derivedColumn10",
 				"derivedColumn10 window(over(time_null),",
@@ -221,7 +229,12 @@
 				"          cloudcover",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select11"
+				"     skipDuplicateMapOutputs: true) ~> select11",
+				"select11 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     truncate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
