@@ -68,9 +68,6 @@
 					"name": "derivedColumn3"
 				},
 				{
-					"name": "derivedColumn4"
-				},
-				{
 					"name": "window1"
 				},
 				{
@@ -185,8 +182,6 @@
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten2",
 				"select2 derive(index = mapIndex(cloudcover, #index)) ~> derivedColumn3",
-				"derivedColumn3 derive(unrolled = unfold(cloudcover),",
-				"          column1 = ERROR_FUNCTION('')) ~> derivedColumn4",
 				"flatten2 window(over(cloudcover),",
 				"     asc(cloudcover, false),",
 				"     new = rank()) ~> window1",
