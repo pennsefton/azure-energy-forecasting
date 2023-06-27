@@ -67,10 +67,7 @@
 				"     mapColumn(",
 				"          time = hourly.time,",
 				"          temperature_2m = hourly.temperature_2m,",
-				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
-				"          precipitation = hourly.precipitation,",
-				"          windspeed_10m = hourly.windspeed_10m,",
-				"          precipitation = hourly.cloudcover",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> flatten1",
@@ -79,9 +76,7 @@
 				"     index = rowNumber()) ~> window1",
 				"window1 derive(cloudcover_value = temperature_2m[index],",
 				"          direct_normal_irradiance_value = direct_normal_irradiance[index],",
-				"          precipitation_value = precipitation[index],",
-				"          temperature_2m_value = temperature_2m[index],",
-				"          windspeed_10m_value = windspeed_10m[index]) ~> derivedColumn1",
+				"          temperature_2m_value = temperature_2m[index]) ~> derivedColumn1",
 				"derivedColumn1 select(mapColumn(",
 				"          time,",
 				"          index,",
@@ -96,7 +91,8 @@
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
