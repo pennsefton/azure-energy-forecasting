@@ -12,7 +12,15 @@
 					"name": "openmeteoJSON"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "staging",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "select1"
@@ -25,6 +33,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -52,25 +63,40 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 foldDown(unroll(hourly.time, hourly.time),",
+				"select1 foldDown(unroll(hourly.time),",
 				"     mapColumn(",
 				"          time = hourly.time,",
-				"          cloudcover = hourly.cloudcover,",
+				"          temperature_2m = hourly.temperature_2m,",
 				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
 				"          precipitation = hourly.precipitation,",
-				"          temperature_2m = hourly.temperature_2m,",
-				"          windspeed_10m = hourly.windspeed_10m",
+				"          windspeed_10m = hourly.windspeed_10m,",
+				"          precipitation = hourly.cloudcover",
 				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> flatten1",
 				"flatten1 window(over(time),",
 				"     asc(time, true),",
 				"     index = rowNumber()) ~> window1",
-				"window1 derive(cloudcover_value = cloudcover[index],",
-				"          direct_normal_irradiance_value = cloudcover[index],",
-				"          precipitation_value = cloudcover[index],",
-				"          temperature_2m_value = cloudcover[index],",
-				"          windspeed_10m_value = cloudcover[index]) ~> derivedColumn1"
+				"window1 derive(cloudcover_value = temperature_2m[index],",
+				"          direct_normal_irradiance_value = direct_normal_irradiance[index],",
+				"          precipitation_value = precipitation[index],",
+				"          temperature_2m_value = temperature_2m[index],",
+				"          windspeed_10m_value = windspeed_10m[index]) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          time,",
+				"          index,",
+				"          cloudcover_value,",
+				"          direct_normal_irradiance_value,",
+				"          precipitation_value,",
+				"          temperature_2m_value,",
+				"          windspeed_10m_value",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
