@@ -1,0 +1,79 @@
+{
+	"name": "openmeteo_new",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "openmeteoJSON"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> openmeteoJSON",
+				"openmeteoJSON select(mapColumn(",
+				"          hourly,",
+				"          latitude,",
+				"          longitude",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 foldDown(unroll(hourly.time, hourly.time),",
+				"     mapColumn(",
+				"          latitude,",
+				"          longitude,",
+				"          time = hourly.time,",
+				"          cloudcover = hourly.cloudcover,",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
+				"          precipitation = hourly.precipitation,",
+				"          temperature_2m = hourly.temperature_2m,",
+				"          windspeed_10m = hourly.windspeed_10m",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 window(over(time),",
+				"     asc(time, true),",
+				"     index = rowNumber()) ~> window1",
+				"window1 derive(cloudcover_value = cloudcover[index],",
+				"          direct_normal_irradiance_value = cloudcover[index],",
+				"          precipitation_value = cloudcover[index],",
+				"          temperature_2m_value = cloudcover[index],",
+				"          windspeed_10m_value = cloudcover[index]) ~> derivedColumn1"
+			]
+		}
+	}
+}
