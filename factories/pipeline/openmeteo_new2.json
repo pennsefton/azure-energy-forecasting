@@ -1,0 +1,40 @@
+{
+	"name": "openmeteo_new2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "openmeteo_new",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"openmeteoJSON": {
+								"filename": "Gainesville_*.json"
+							},
+							"sink1": {
+								"filename": "Gainesville_*.json"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
