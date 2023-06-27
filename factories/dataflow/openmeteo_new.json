@@ -54,8 +54,6 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 foldDown(unroll(hourly.time, hourly.time),",
 				"     mapColumn(",
-				"          latitude,",
-				"          longitude,",
 				"          time = hourly.time,",
 				"          cloudcover = hourly.cloudcover,",
 				"          direct_normal_irradiance = hourly.direct_normal_irradiance,",
