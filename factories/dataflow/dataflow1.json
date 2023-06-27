@@ -12,18 +12,10 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [
-				{
-					"dataset": {
-						"referenceName": "staging",
-						"type": "DatasetReference"
-					},
-					"name": "sink1"
-				}
-			],
+			"sinks": [],
 			"transformations": [
 				{
-					"name": "select1"
+					"name": "selectCloudcover"
 				},
 				{
 					"name": "derivedColumn1"
@@ -42,6 +34,54 @@
 				},
 				{
 					"name": "window2"
+				},
+				{
+					"name": "selectfinal2"
+				},
+				{
+					"name": "filter2"
+				},
+				{
+					"name": "selectTime"
+				},
+				{
+					"name": "flatten2"
+				},
+				{
+					"name": "rank2"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "selectdni"
+				},
+				{
+					"name": "cast2"
+				},
+				{
+					"name": "derivedColumn8"
+				},
+				{
+					"name": "flatten3"
+				},
+				{
+					"name": "derivedColumn9"
+				},
+				{
+					"name": "derivedColumn10"
+				},
+				{
+					"name": "window3"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "filter3"
+				},
+				{
+					"name": "join2"
 				}
 			],
 			"scriptLines": [
@@ -66,7 +106,7 @@
 				"          time = hourly.time",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
+				"     skipDuplicateMapOutputs: true) ~> selectCloudcover",
 				"cast1 derive(flattened = flatten([cloudcover, time])) ~> derivedColumn1",
 				"derivedColumn1 foldDown(unroll(flattened, flattened),",
 				"     mapColumn(",
@@ -74,22 +114,78 @@
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
-				"select1 cast(output(",
+				"selectCloudcover cast(output(",
 				"          cloudcover as string[]",
 				"     ),",
 				"     errors: true) ~> cast1",
 				"flatten1 derive(times = toDate(toString(flattened)) ,",
-				"          cloudcover = toDouble(flattened)) ~> derivedColumn5",
+				"          cloudcover = toInteger(flattened)) ~> derivedColumn5",
 				"derivedColumn5 derive(time_null = iif(isNull(times), 1, 0)) ~> derivedColumn6",
 				"derivedColumn6 window(over(time_null),",
 				"     asc(times, true),",
 				"     endRowOffset: 0L,",
-				"     count_nulls = countIf(time_null==1)) ~> window2",
-				"window2 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
+				"     index = countIf(time_null==1)) ~> window2",
+				"window2 select(mapColumn(",
+				"          cloudcover,",
+				"          index",
+				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> selectfinal2",
+				"selectfinal2 filter(not(isNull(cloudcover))) ~> filter2",
+				"source1 select(mapColumn(",
+				"          time = hourly.time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectTime",
+				"selectTime foldDown(unroll(time),",
+				"     mapColumn(",
+				"          time",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"flatten2 rank(asc(time, true),",
+				"     output(time_rank as long)) ~> rank2",
+				"filter2, rank2 join(index == time_rank,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"source1 select(mapColumn(",
+				"          time = hourly.time,",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectdni",
+				"selectdni cast(output(",
+				"          direct_normal_irradiance as string[]",
+				"     ),",
+				"     errors: true) ~> cast2",
+				"cast2 derive(flattened = flatten([time, direct_normal_irradiance])) ~> derivedColumn8",
+				"derivedColumn8 foldDown(unroll(flattened),",
+				"     mapColumn(",
+				"          flattened",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten3",
+				"flatten3 derive(times = toDate(toString(flattened)) ,",
+				"          dni = toDouble(flattened)) ~> derivedColumn9",
+				"derivedColumn9 derive(time_null = iif(isNull(times),1,0)) ~> derivedColumn10",
+				"derivedColumn10 window(over(time_null),",
+				"     asc(times, true),",
+				"     endRowOffset: 0L,",
+				"     index = countIf(time_null==1)) ~> window3",
+				"window3 select(mapColumn(",
+				"          dni,",
+				"          index",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 filter(not(isNull(dni))) ~> filter3",
+				"filter3, rank2 join(index == time_rank,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2"
 			]
 		}
 	}
