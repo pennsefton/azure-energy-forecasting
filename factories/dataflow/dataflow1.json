@@ -36,7 +36,7 @@
 					"name": "window2"
 				},
 				{
-					"name": "selectfinal2"
+					"name": "select10"
 				},
 				{
 					"name": "filter2"
@@ -82,6 +82,18 @@
 				},
 				{
 					"name": "join2"
+				},
+				{
+					"name": "selectfinaldni"
+				},
+				{
+					"name": "selectfinalcloudcover"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "select11"
 				}
 			],
 			"scriptLines": [
@@ -130,8 +142,8 @@
 				"          index",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> selectfinal2",
-				"selectfinal2 filter(not(isNull(cloudcover))) ~> filter2",
+				"     skipDuplicateMapOutputs: true) ~> select10",
+				"select10 filter(not(isNull(cloudcover))) ~> filter2",
 				"source1 select(mapColumn(",
 				"          time = hourly.time",
 				"     ),",
@@ -185,7 +197,31 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join2"
+				"     broadcast: 'auto')~> join2",
+				"join2 select(mapColumn(",
+				"          dni,",
+				"          time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectfinaldni",
+				"join1 select(mapColumn(",
+				"          cloudcover,",
+				"          time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectfinalcloudcover",
+				"selectfinaldni, selectfinalcloudcover join(selectfinaldni@time == selectfinalcloudcover@time,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"join3 select(mapColumn(",
+				"          time = selectfinaldni@time,",
+				"          dni,",
+				"          cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select11"
 			]
 		}
 	}
