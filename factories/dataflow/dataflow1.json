@@ -82,13 +82,14 @@
 				"          cloudcover = toDouble(flattened)) ~> derivedColumn5",
 				"derivedColumn5 derive(time_null = iif(isNull(times), 1, 0)) ~> derivedColumn6",
 				"derivedColumn6 window(over(time_null),",
-				"     asc(times, true),",
+				"     desc(times, true),",
 				"     startRowOffset: 0L,",
 				"     count_nulls = countIf(time_null==1)) ~> window2",
 				"window2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
