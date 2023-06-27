@@ -10,12 +10,28 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "openmeteo_reponse_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "flatten2"
 				}
 			],
 			"scriptLines": [
@@ -36,12 +52,46 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['Gainesville_*.json']) ~> source1",
+				"source(output(",
+				"          elevation as double,",
+				"          generationtime_ms as double,",
+				"          hourly as (cloudcover as short[], direct_normal_irradiance as double[], precipitation as double[], temperature_2m as double[], time as string[], windspeed_10m as double[]),",
+				"          hourly_units as (cloudcover as string, direct_normal_irradiance as string, precipitation as string, temperature_2m as string, time as string, windspeed_10m as string),",
+				"          latitude as double,",
+				"          longitude as double,",
+				"          timezone as string,",
+				"          timezone_abbreviation as string,",
+				"          utc_offset_seconds as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['Gainesville_*.json']) ~> source2",
 				"source1 select(mapColumn(",
 				"          cloudcover = hourly.cloudcover,",
-				"          precipitation = hourly.precipitation",
+				"          direct_normal_irradiance = hourly.direct_normal_irradiance",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 foldDown(unrollMultiple(cloudcover,direct_normal_irradiance),",
+				"     mapColumn(",
+				"          direct_normal_irradiance = direct_normal_irradiance,",
+				"          cloudcover",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> flatten1",
+				"source2 select(mapColumn(",
+				"          dni = hourly.direct_normal_irradiance",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 foldDown(unroll(dni, dni),",
+				"     mapColumn(",
+				"          dni",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2"
 			]
 		}
 	}
