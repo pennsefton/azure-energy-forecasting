@@ -19,15 +19,8 @@
 						"referenceName": "eia_flow",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"eiaSQL": {
-								"filename": "Gainesville_*.json"
-							}
-						},
-						"linkedServiceParameters": {
-							"eiaSQL": {
-								"schemaLinkedService": {
-									"filename": "Gainesville_*.json"
-								}
+							"sink1": {
+								"filename": "gainesville_*.json"
 							}
 						}
 					},
