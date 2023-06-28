@@ -98,7 +98,7 @@
 				"     partitionBy('hash', 1)) ~> derivedColumn1",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['gainesvilleomTEST'],",
+				"     partitionFileNames:[(concat(\"eom\", toString(currentUTC())))],",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
