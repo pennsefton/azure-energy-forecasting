@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "staging_eia",
+						"referenceName": "eia_staging",
 						"type": "DatasetReference"
 					},
 					"name": "eiaSQL"
@@ -54,14 +54,10 @@
 				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
 				"flattenJSON sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> eiaSQL"
+				"     format: 'table') ~> eiaSQL"
 			]
 		}
 	}
