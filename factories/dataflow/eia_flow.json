@@ -18,7 +18,7 @@
 						"referenceName": "eia_staging",
 						"type": "DatasetReference"
 					},
-					"name": "eiaSQL"
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -42,8 +42,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     rowUrlColumn: 'MDSourceFile',",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['*.json'],",
-				"     partitionBy('hash', 1)) ~> eiaJSON",
+				"     wildcardPaths:['*.json']) ~> eiaJSON",
 				"eiaJSON foldDown(unroll(response.data),",
 				"     mapColumn(",
 				"          fueltype = response.data.fueltype,",
@@ -54,7 +53,6 @@
 				"          value = response.data.value,",
 				"          {value-units} = response.data.{value-units}",
 				"     ),",
-				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
 				"flattenJSON select(mapColumn(",
@@ -63,17 +61,15 @@
 				"          {type-name},",
 				"          value",
 				"     ),",
-				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['gainesvilleeiaTEST'],",
+				"     partitionFileNames:['gainesvilleeiaTEST.csv'],",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1),",
-				"     format: 'table') ~> eiaSQL"
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
