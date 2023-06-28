@@ -29,13 +29,13 @@
 					"name": "flatten1"
 				},
 				{
-					"name": "window1"
+					"name": "select2"
+				},
+				{
+					"name": "rank1"
 				},
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -71,21 +71,18 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> flatten1",
-				"flatten1 window(over(time),",
-				"     asc(time, true),",
-				"     index = rowNumber()) ~> window1",
-				"window1 derive(cloudcover_value = temperature_2m[index],",
-				"          direct_normal_irradiance_value = direct_normal_irradiance[index],",
-				"          temperature_2m_value = temperature_2m[index]) ~> derivedColumn1",
 				"derivedColumn1 select(mapColumn(",
 				"          time,",
 				"          index,",
 				"          direct_normal_irradiance_value,",
-				"          temperature_2m_value,",
-				"          cloudcover_value",
+				"          temperature_2m_value",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
+				"flatten1 rank(asc(time, true),",
+				"     output(index as long)) ~> rank1",
+				"rank1 derive(temperature_2m_value = temperature_2m[index],",
+				"          direct_normal_irradiance_value = direct_normal_irradiance[Index]) ~> derivedColumn1",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     truncate: true,",
