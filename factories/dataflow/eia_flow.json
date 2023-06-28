@@ -55,7 +55,7 @@
 				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
 				"flattenJSON sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['gainesville_test'],",
+				"     partitionFileNames:['gainesvilleeiaTEST'],",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
