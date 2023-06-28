@@ -50,13 +50,16 @@
 				"          value = response.data.value,",
 				"          {value-units} = response.data.{value-units}",
 				"     ),",
+				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
 				"flattenJSON sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['gainesville_test'],",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1),",
 				"     format: 'table') ~> eiaSQL"
 			]
 		}
