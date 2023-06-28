@@ -25,6 +25,9 @@
 				{
 					"name": "flattenJSON",
 					"description": "flatten to response data"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -53,7 +56,15 @@
 				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flattenJSON",
-				"flattenJSON sink(allowSchemaDrift: true,",
+				"flattenJSON select(mapColumn(",
+				"          period,",
+				"          {respondent-name},",
+				"          {type-name},",
+				"          value",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['gainesvilleeiaTEST'],",
 				"     truncate: true,",
