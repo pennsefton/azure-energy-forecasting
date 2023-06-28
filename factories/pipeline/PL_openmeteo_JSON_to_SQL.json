@@ -16,46 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "openmeteo_flow",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"openmeteoCloudcover": {
-								"filename": "Gainesville_*.json"
-							},
-							"openmeteotime": {
-								"filename": "Gainesville_*.json"
-							},
-							"openmeteoprecipitation": {
-								"filename": "Gainesville_*.json"
-							},
-							"openmeteodni": {
-								"filename": "Gainesville_*.json"
-							},
-							"openmeteotemperature": {
-								"filename": "Gainesville_*.json"
-							},
-							"openmeteowindspeed": {
-								"filename": "Gainesville_*.json"
-							},
-							"sinkCloudcover": {
-								"filename": "CloudcoverTEST.csv"
-							},
-							"sinkTime": {
-								"filename": "TimeTEST.csv"
-							},
-							"sinkPrecipitation": {
-								"filename": "PreciptationTEST.csv"
-							},
-							"sinkdni": {
-								"filename": "dniTEST.csv"
-							},
-							"sinktemperature": {
-								"filename": "dniTEST.csv"
-							},
-							"sinkwindspeed": {
-								"filename": "dniTEST.csv"
-							}
-						}
+						"referenceName": "openmeteo_new",
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
