@@ -17,7 +17,19 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "eia_flow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"eiaSQL": {
+								"filename": "Gainesville_*.json"
+							}
+						},
+						"linkedServiceParameters": {
+							"eiaSQL": {
+								"schemaLinkedService": {
+									"filename": "Gainesville_*.json"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
